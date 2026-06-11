@@ -17,27 +17,35 @@ export default function Camera({ onCapture, label = "Capturar Foto" }: CameraPro
 
   const startCamera = async () => {
     try {
-      // Detener cualquier stream previo
       if (stream) {
         stream.getTracks().forEach(track => track.stop())
       }
 
-      const mediaStream = await navigator.mediaDevices.getUserMedia({ 
+      // Restricciones simplificadas para máxima compatibilidad móvil
+      const constraints = { 
         video: { 
-          facingMode: facingMode,
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
+          facingMode: facingMode
         }, 
         audio: false 
-      })
-      setStream(mediaStream)
-      if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream
       }
+
+      const mediaStream = await navigator.mediaDevices.getUserMedia(constraints)
+      setStream(mediaStream)
       setIsCameraOpen(true)
+
+      // Usamos un pequeño delay y eventos explícitos para móviles
+      setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = mediaStream
+          videoRef.current.onloadedmetadata = () => {
+            videoRef.current?.play().catch(e => console.error("Error en play:", e))
+          }
+        }
+      }, 300)
+
     } catch (err) {
       console.error("Error al acceder a la cámara:", err)
-      alert("⚠️ No se pudo abrir la cámara en vivo. \n\nEsto suele pasar si no estás usando una conexión segura (HTTPS). Usa el botón 'Tomar Foto Directa' en su lugar.")
+      alert("⚠️ No se pudo abrir la cámara en vivo. \n\nUsa el botón 'Tomar Foto Directa' en su lugar.")
     }
   }
 
