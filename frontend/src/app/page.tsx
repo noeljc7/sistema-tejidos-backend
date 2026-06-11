@@ -143,8 +143,23 @@ export default function Home() {
     }
     setCargando(true)
     try {
-      const file = new File([fotoProducto], "producto.jpg", { type: "image/jpeg" })
-      await createProducto(tipo, color, parseInt(tejedoraId), file)
+      let fileToUpload = new File([fotoProducto], "producto.jpg", { type: "image/jpeg" })
+
+      // Compresión IA
+      const options = {
+        maxSizeMB: 0.3, // Máximo 300KB
+        maxWidthOrHeight: 1024,
+        useWebWorker: true
+      }
+      try {
+        const compressedFile = await imageCompression(fileToUpload, options)
+        fileToUpload = new File([compressedFile], "producto_comp.jpg", { type: "image/jpeg" })
+        console.log("Producto comprimido de:", (fotoProducto.size / 1024).toFixed(2), "KB a:", (compressedFile.size / 1024).toFixed(2), "KB")
+      } catch (e) {
+        console.error("Error comprimiendo producto:", e)
+      }
+
+      await createProducto(tipo, color, parseInt(tejedoraId), fileToUpload)
       alert("✅ ¡Producto registrado en el catálogo!")
       setTipo('')
       setColor('')
