@@ -67,12 +67,23 @@ export async function analizarProducto(foto: File) {
   return response.json();
 }
 
-export async function createProducto(tipo: string, color: string, tejedoraId: number, foto: File) {
+export async function createProducto(
+  tipo: str, 
+  color: str, 
+  tejedoraId: number, 
+  foto: File,
+  pesoGramos?: number,
+  precioSugerido?: number,
+  estado: string = "terminado"
+) {
   const formData = new FormData();
   formData.append("tipo", tipo);
   formData.append("color", color);
   formData.append("tejedora_id", tejedoraId.toString());
   formData.append("foto", foto);
+  if (pesoGramos) formData.append("peso_gramos", pesoGramos.toString());
+  if (precioSugerido) formData.append("precio_sugerido", precioSugerido.toString());
+  formData.append("estado", estado);
 
   const response = await fetch(`${getApiUrl()}/productos/`, {
     method: "POST",

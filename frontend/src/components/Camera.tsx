@@ -112,28 +112,28 @@ export default function Camera({ onCapture, label = "Capturar Foto" }: CameraPro
   }, [stream])
 
   return (
-    <div className="flex flex-col items-center space-y-4 p-4 border-2 border-dashed border-gray-200 rounded-2xl bg-white">
+    <div className="flex flex-col items-center space-y-4 p-4 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50">
       {!isCameraOpen ? (
         <div className="flex flex-col space-y-3 w-full">
           <button 
             type="button"
             onClick={startCamera}
-            className="bg-indigo-600 text-white px-6 py-4 rounded-xl font-bold hover:bg-indigo-700 transition flex items-center justify-center gap-3 shadow-md active:scale-95"
+            className="bg-indigo-600 text-white px-6 py-4 rounded-xl font-bold text-xs uppercase tracking-[0.2em] hover:bg-indigo-700 transition-all shadow-md active:scale-95"
           >
-            <span className="text-xl">📹</span> Usar Cámara en Vivo
+            Activar Cámara en Vivo
           </button>
           
           <div className="relative py-2">
             <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-gray-200"></span>
+              <span className="w-full border-t border-slate-200"></span>
             </div>
-            <div className="relative flex justify-center text-[10px] uppercase font-bold tracking-widest">
-              <span className="bg-white px-3 text-gray-400">O la aplicación del móvil</span>
+            <div className="relative flex justify-center text-[9px] uppercase font-bold tracking-[0.2em]">
+              <span className="bg-slate-50 px-3 text-slate-400">Alternativa</span>
             </div>
           </div>
 
-          <label className="cursor-pointer bg-gray-50 border-2 border-gray-200 text-gray-700 px-6 py-4 rounded-xl font-bold text-center hover:bg-gray-100 transition flex items-center justify-center gap-3 active:scale-95">
-            <span className="text-xl">📸</span> Tomar Foto Directa
+          <label className="cursor-pointer bg-white border border-slate-200 text-slate-600 px-6 py-4 rounded-xl font-bold text-xs uppercase tracking-[0.2em] text-center hover:bg-slate-50 transition-all shadow-sm active:scale-95 flex items-center justify-center gap-3">
+            Captura Directa
             <input 
               type="file" 
               accept="image/*" 
@@ -142,12 +142,9 @@ export default function Camera({ onCapture, label = "Capturar Foto" }: CameraPro
               onChange={handleNativeCapture}
             />
           </label>
-          <p className="text-[10px] text-center text-gray-400 italic">
-            Tip: La cámara en vivo requiere HTTPS. Si falla, usa 'Foto Directa'.
-          </p>
         </div>
       ) : (
-        <div className="relative w-full max-w-md overflow-hidden rounded-2xl bg-black shadow-2xl">
+        <div className="relative w-full max-w-md overflow-hidden rounded-2xl bg-black shadow-2xl border border-slate-800">
           <video 
             ref={videoRef} 
             autoPlay 
@@ -155,28 +152,28 @@ export default function Camera({ onCapture, label = "Capturar Foto" }: CameraPro
             muted
             className={`w-full h-auto ${facingMode === 'user' ? 'scale-x-[-1]' : ''}`}
           />
-          <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/70 to-transparent flex justify-between items-center">
+          <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent flex justify-between items-center">
             <button 
               type="button"
               onClick={stopCamera}
-              className="bg-white/20 backdrop-blur-md text-white px-4 py-2 rounded-lg font-medium hover:bg-white/30 transition"
+              className="bg-white/10 backdrop-blur-md text-white px-5 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-white/20 transition"
             >
               Cancelar
             </button>
             <button 
               type="button"
               onClick={takePhoto}
-              className="bg-white text-indigo-600 w-16 h-16 rounded-full font-bold shadow-xl flex items-center justify-center active:scale-90 transition border-4 border-indigo-100"
+              className="bg-white text-indigo-600 w-16 h-16 rounded-full font-bold shadow-2xl flex items-center justify-center active:scale-90 transition border-4 border-indigo-50"
             >
               <div className="w-10 h-10 rounded-full border-2 border-indigo-600"></div>
             </button>
             <button 
               type="button"
               onClick={toggleCamera}
-              className="bg-white/20 backdrop-blur-md text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-white/30 transition"
-              title="Cambiar Cámara"
+              className="bg-white/10 backdrop-blur-md text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-white/20 transition border border-white/20"
+              title="Alternar Cámara"
             >
-              🔄
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.001 0 01-15.357-2m15.357 2H15"/></svg>
             </button>
           </div>
         </div>

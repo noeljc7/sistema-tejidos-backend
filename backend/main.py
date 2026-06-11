@@ -131,6 +131,9 @@ async def create_producto(
     tipo: str = Form(...), 
     color: str = Form(...), 
     tejedora_id: int = Form(...),
+    peso_gramos: Optional[int] = Form(None),
+    precio_sugerido: Optional[int] = Form(None),
+    estado: Optional[str] = Form("terminado"),
     foto: UploadFile = File(...), 
     db: Session = Depends(get_db)
 ):
@@ -144,7 +147,14 @@ async def create_producto(
         tipo=tipo, 
         color=color, 
         tejedora_id=tejedora_id,
-        foto_producto=url_nube
+        foto_producto=url_nube,
+        peso_gramos=peso_gramos,
+        precio_sugerido=precio_sugerido,
+        estado=estado
+    )
+        peso_gramos=peso_gramos,
+        precio_sugerido=precio_sugerido,
+        estado=estado
     )
     db.add(db_producto)
     db.commit()

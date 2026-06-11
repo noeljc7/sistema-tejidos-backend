@@ -5,6 +5,9 @@ from datetime import datetime
 class ProductoBase(BaseModel):
     tipo: str
     color: str
+    peso_gramos: Optional[int] = None
+    precio_sugerido: Optional[int] = None
+    estado: Optional[str] = "terminado"
 
 class ProductoCreate(ProductoBase):
     tejedora_id: int
