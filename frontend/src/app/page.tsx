@@ -31,6 +31,7 @@ export default function Home() {
   const [cargando, setCargando] = useState(false)
   const [serverStatus, setServerStatus] = useState<'buscando' | 'online' | 'offline'>('buscando')
   const [selectedTejedoraId, setSelectedTejedoraId] = useState<string | null>(null)
+  const [selectedProductImage, setSelectedProductImage] = useState<string | null>(null)
 
   useEffect(() => {
     refreshData()
@@ -224,7 +225,7 @@ export default function Home() {
                 </span>
               </div>
               <span className="text-[9px] text-slate-400 mt-1 font-mono uppercase">
-                NODE: {process.env.NEXT_PUBLIC_API_URL?.split('.')[0].replace('https://', '') || 'LOCAL'}
+                NODE: {process.env.NEXT_PUBLIC_API_URL?.replace('https://', '').split('.')[0] || 'LOCAL'}
               </span>
             </div>
             <button 
@@ -287,7 +288,6 @@ export default function Home() {
             <Camera onCapture={(blob) => setFotoTejedora(blob)} label="Registro" />
             {fotoTejedora && (
               <div className="mt-6 flex flex-col items-center p-6 bg-slate-50 rounded-xl border border-slate-100 animate-in fade-in duration-500">
-                <p className="text-[10px] text-emerald-600 font-bold uppercase tracking-[0.2em] mb-4 text-center italic">Perfil Capturado</p>
                 <img 
                   src={URL.createObjectURL(fotoTejedora)} 
                   alt="Vista previa" 
@@ -309,7 +309,7 @@ export default function Home() {
               disabled={cargando}
               className={`w-full py-4 rounded-lg font-bold text-[10px] uppercase tracking-[0.3em] shadow-md transition-all ${cargando ? 'bg-slate-300 cursor-not-allowed text-slate-500' : 'bg-slate-900 hover:bg-black text-white active:scale-[0.98]'}`}
             >
-              {cargando ? 'PROCESANDO...' : 'FINALIZAR REGISTRO'}
+              {cargando ? 'Procesando...' : 'Finalizar Registro'}
             </button>
           </form>
 
@@ -343,7 +343,7 @@ export default function Home() {
           <h2 className="text-xs font-bold mb-8 uppercase tracking-[0.3em] text-slate-800 border-l-4 border-emerald-600 pl-4">2. Gestión de Producción</h2>
           <div className="mb-8">
             <Camera onCapture={handleCaptureProducto} label="Producto" />
-            {identificando && <p className="text-center text-[10px] text-indigo-600 font-bold uppercase mt-4 animate-pulse">VALIDANDO IDENTIDAD...</p>}
+            {identificando && <p className="text-center text-[10px] text-indigo-600 font-bold uppercase mt-4 animate-pulse italic">Validando Identidad...</p>}
             
             {fotoProducto && !identificando && (
               <div className="mt-6 flex flex-col items-center p-6 bg-slate-50 rounded-xl border border-slate-100 animate-in fade-in duration-500">
@@ -363,7 +363,7 @@ export default function Home() {
               onChange={(e) => setTejedoraId(e.target.value)}
               required
             >
-              <option value="">SELECCIONE ARTESANA</option>
+              <option value="">SELECCIONE RESPONSABLE</option>
               {tejedoras.map((t) => (
                 <option key={t.id} value={t.id}>{t.nombre.toUpperCase()}</option>
               ))}
@@ -390,15 +390,15 @@ export default function Home() {
 
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-1">
-                <label className="text-[9px] font-bold text-slate-400 uppercase ml-1 tracking-widest">Peso (G)</label>
+                <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">Peso (G)</label>
                 <input type="number" placeholder="0" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold uppercase" value={peso} onChange={(e) => setPeso(e.target.value)} />
               </div>
               <div className="space-y-1">
-                <label className="text-[9px] font-bold text-slate-400 uppercase ml-1 tracking-widest">Valor (Q)</label>
+                <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">Valor (Q)</label>
                 <input type="number" placeholder="0.00" className="w-full p-4 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold uppercase" value={precio} onChange={(e) => setPrecio(e.target.value)} />
               </div>
               <div className="space-y-1">
-                <label className="text-[9px] font-bold text-slate-400 uppercase ml-1 tracking-widest">Estado</label>
+                <label className="text-[9px] font-bold text-slate-400 uppercase ml-1">Estado</label>
                 <select className="w-full p-4 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold uppercase" value={estado} onChange={(e) => setEstado(e.target.value)}>
                   <option value="proceso">PROCESO</option>
                   <option value="terminado">TERMINADO</option>
@@ -409,29 +409,29 @@ export default function Home() {
             
             <button 
               disabled={cargando}
-              className={`w-full py-4 rounded-lg font-bold text-[10px] uppercase tracking-[0.3em] shadow-md transition-all ${cargando ? 'bg-slate-300 cursor-not-allowed' : 'bg-emerald-600 hover:bg-emerald-700 text-white active:scale-[0.98]'}`}
+              className={`w-full py-4 rounded-lg font-bold text-[10px] uppercase tracking-[0.3em] shadow-md transition-all ${cargando ? 'bg-slate-300 cursor-not-allowed text-slate-500' : 'bg-emerald-600 hover:bg-emerald-700 text-white active:scale-[0.98]'}`}
             >
-              {cargando ? 'REGISTRANDO...' : 'INGRESAR AL CATÁLOGO'}
+              {cargando ? 'Ingresando...' : 'Confirmar Ingreso'}
             </button>
           </form>
 
-          <h3 className="text-[10px] font-bold mt-14 mb-6 uppercase tracking-[0.3em] text-slate-400 border-b pb-4 text-emerald-600">CATÁLOGO DE INVENTARIO</h3>
+          <h3 className="text-[10px] font-bold mt-14 mb-6 uppercase tracking-[0.3em] text-slate-400 border-b pb-4 text-emerald-600 flex justify-between items-center">
+            CATÁLOGO DE INVENTARIO
+            {selectedTejedoraId && <span className="text-[9px] bg-emerald-50 text-emerald-700 px-2 py-1 rounded">VISTA FILTRADA</span>}
+          </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {productos
               .filter(p => !selectedTejedoraId || p.tejedora_id.toString() === selectedTejedoraId)
               .map((p) => {
               const tejedora = tejedoras.find(t => t.id === p.tejedora_id);
+              const imgUrl = p.foto_producto?.startsWith('http') ? p.foto_producto : `http://${window.location.hostname}:8000/${p.foto_producto}`;
               return (
                 <div key={p.id} className="bg-white rounded-xl overflow-hidden border border-slate-200 shadow-sm group hover:shadow-lg transition-all duration-300">
-                  <div className="relative h-44 w-full bg-slate-100">
-                    <img 
-                      src={p.foto_producto?.startsWith('http') ? p.foto_producto : `http://${window.location.hostname}:8000/${p.foto_producto}`} 
-                      alt={p.tipo} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
-                    />
+                  <div className="relative h-44 w-full bg-slate-100 cursor-zoom-in" onClick={() => setSelectedProductImage(imgUrl)}>
+                    <img src={imgUrl} alt={p.tipo} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                     <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-sm px-3 py-1.5 rounded-full text-[8px] font-black uppercase tracking-widest text-slate-700 ring-1 ring-slate-100">{p.color}</div>
                     <button 
-                      onClick={() => handleDeleteProducto(p.id)}
+                      onClick={(e) => { e.stopPropagation(); handleDeleteProducto(p.id); }}
                       className="absolute top-3 left-3 bg-rose-500 text-white w-8 h-8 rounded-full shadow-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-rose-600 z-30"
                     >✕</button>
                   </div>
@@ -447,11 +447,15 @@ export default function Home() {
                     <div className="grid grid-cols-2 gap-3 mb-5">
                       <div className="bg-slate-900 p-2.5 rounded shadow-inner flex flex-col justify-center border border-slate-800">
                         <span className="text-[7px] text-slate-400 font-black uppercase tracking-widest mb-0.5 leading-none">Peso Total</span>
-                        <span className="text-xs font-bold text-white tracking-tighter">{p.peso_gramos ? `${p.peso_gramos}g` : '--'}</span>
+                        <span className="text-xs font-bold text-white tracking-tighter">
+                          {p.peso_gramos ? `${p.peso_gramos}g` : '--'}
+                        </span>
                       </div>
                       <div className="bg-emerald-50 p-2.5 rounded shadow-sm flex flex-col justify-center border border-emerald-100">
                         <span className="text-[7px] text-emerald-600 font-black uppercase tracking-widest mb-0.5 leading-none">Valor Unit.</span>
-                        <span className="text-xs font-bold text-emerald-900 tracking-tighter">{p.precio_sugerido ? `Q${p.precio_sugerido}` : '--'}</span>
+                        <span className="text-xs font-bold text-emerald-900 tracking-tighter">
+                          {p.precio_sugerido ? `Q${p.precio_sugerido}` : '--'}
+                        </span>
                       </div>
                     </div>
 
@@ -476,21 +480,12 @@ export default function Home() {
     {/* MODAL DE ZOOM PROFESIONAL */}
     {selectedProductImage && (
       <div 
-        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 md:p-10 animate-in fade-in duration-300"
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 backdrop-blur-md p-4 animate-in fade-in duration-300"
         onClick={() => setSelectedProductImage(null)}
       >
-        <div className="relative max-w-5xl w-full max-h-full flex items-center justify-center">
-          <button 
-            className="absolute -top-12 right-0 text-white text-xs font-black uppercase tracking-widest hover:text-indigo-400 transition-colors"
-            onClick={() => setSelectedProductImage(null)}
-          >
-            Cerrar Detalle [X]
-          </button>
-          <img 
-            src={selectedProductImage} 
-            alt="Detalle de tejido" 
-            className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl border border-white/10"
-          />
+        <div className="relative max-w-5xl w-full flex flex-col items-center">
+          <button className="mb-4 text-white text-[10px] font-black uppercase tracking-[0.3em] bg-white/10 px-4 py-2 rounded-full border border-white/20">Cerrar Detalle [X]</button>
+          <img src={selectedProductImage} alt="Zoom" className="max-w-full max-h-[80vh] object-contain rounded shadow-2xl border border-white/10" />
         </div>
       </div>
     )}
