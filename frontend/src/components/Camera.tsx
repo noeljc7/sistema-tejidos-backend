@@ -158,7 +158,14 @@ export default function Camera({ onCapture, label = "Capturar Foto" }: CameraPro
             >
               <div className="w-10 h-10 rounded-full border-2 border-indigo-600"></div>
             </button>
-            <div className="w-[84px]"></div> {/* Espaciador para centrar el botón de disparo */}
+            <button 
+              type="button"
+              onClick={toggleCamera}
+              className="bg-white/20 backdrop-blur-md text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-white/30 transition"
+              title="Cambiar Cámara"
+            >
+              🔄
+            </button>
           </div>
         </div>
       )}
