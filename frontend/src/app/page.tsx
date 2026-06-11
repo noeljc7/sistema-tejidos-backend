@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import imageCompression from 'browser-image-compression'
 import { getTejedoras, getProductos, createTejedora, createProducto, identificarTejedora, analizarProducto, deleteTejedora, deleteProducto, limpiarTodo } from '@/lib/api'
 import Camera from '@/components/Camera'
 
