@@ -2,7 +2,17 @@
 
 import { useState, useEffect } from 'react'
 import imageCompression from 'browser-image-compression'
-import { getTejedoras, getProductos, createTejedora, createProducto, identificarTejedora, analizarProducto, deleteTejedora, deleteProducto, limpiarTodo } from '@/lib/api'
+import { 
+  getTejedoras, 
+  getProductos, 
+  createTejedora, 
+  createProducto, 
+  identificarTejedora, 
+  analizarProducto, 
+  deleteTejedora, 
+  deleteProducto, 
+  limpiarTodo 
+} from '@/lib/api'
 import Camera from '@/components/Camera'
 
 export default function Home() {
@@ -24,17 +34,15 @@ export default function Home() {
   }, [])
 
   const checkServer = async () => {
-    // Usar la misma lógica que en lib/api.ts para obtener la URL correcta
     let url = process.env.NEXT_PUBLIC_API_URL || `http://${window.location.hostname}:8000`
     
-    // Si la URL es la de localhost pero estamos en la nube, corregir
     if (typeof window !== "undefined" && !url.includes('onrender.com') && !window.location.hostname.includes('localhost')) {
-        url = `https://${window.location.hostname.replace('vercel.app', 'onrender.com')}` // Intento de fallback
+        url = `https://${window.location.hostname.replace('vercel.app', 'onrender.com')}`
     }
 
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000); // Más tiempo para el despertar de Render
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
 
       const res = await fetch(`${url}/`, {
         headers: { "Bypass-Tunnel-Reminder": "true" },
@@ -45,7 +53,6 @@ export default function Home() {
       if (res.ok) setServerStatus('online')
       else setServerStatus('offline')
     } catch (err) {
-      console.log("Error de conexión:", err)
       setServerStatus('offline')
     }
   }
@@ -88,14 +95,11 @@ export default function Home() {
     try {
       const file = new File([blob], "detect.jpg", { type: "image/jpeg" })
       
-      // 1. Identificar Tejedora
       const result = await identificarTejedora(file)
       if (result && result.id) {
         setTejedoraId(result.id.toString())
-        console.log("IA Detectada:", result);
       }
 
-      // 2. Analizar Producto (IA)
       const analisis = await analizarProducto(file)
       if (analisis) {
         setColor(analisis.color)
@@ -124,9 +128,8 @@ export default function Home() {
     try {
       let fileToUpload = new File([fotoTejedora], "tejedora.jpg", { type: "image/jpeg" })
       
-      // Compresión IA
       const options = {
-        maxSizeMB: 0.2, // Máximo 200KB
+        maxSizeMB: 0.2,
         maxWidthOrHeight: 800,
         useWebWorker: true
       }
@@ -143,7 +146,6 @@ export default function Home() {
       setFotoTejedora(null)
       refreshData()
     } catch (err) {
-      console.error("Error al guardar:", err)
       alert("❌ Error al guardar.")
     } finally {
       setCargando(false)
@@ -160,16 +162,14 @@ export default function Home() {
     try {
       let fileToUpload = new File([fotoProducto], "producto.jpg", { type: "image/jpeg" })
 
-      // Compresión IA
       const options = {
-        maxSizeMB: 0.3, // Máximo 300KB
+        maxSizeMB: 0.3,
         maxWidthOrHeight: 1024,
         useWebWorker: true
       }
       try {
         const compressedFile = await imageCompression(fileToUpload, options)
         fileToUpload = new File([compressedFile], "producto_comp.jpg", { type: "image/jpeg" })
-        console.log("Producto comprimido de:", (fotoProducto.size / 1024).toFixed(2), "KB a:", (compressedFile.size / 1024).toFixed(2), "KB")
       } catch (e) {
         console.error("Error comprimiendo producto:", e)
       }
@@ -214,7 +214,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Panel de Estadísticas y Estado de IA */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="bg-indigo-600 p-6 rounded-3xl text-white shadow-lg shadow-indigo-200">
             <p className="text-indigo-100 text-sm font-medium">Tejedoras activas</p>
@@ -222,7 +221,7 @@ export default function Home() {
             <div className="mt-4 flex -space-x-2">
               {tejedoras.slice(0, 5).map(t => (
                 <div key={t.id} className="w-8 h-8 rounded-full border-2 border-indigo-600 bg-indigo-300 overflow-hidden">
-                  <img src={`http://${window.location.hostname}:8000/${t.foto_perfil}`} className="w-full h-full object-cover" />
+                  <img src={t.foto_perfil?.startsWith('http') ? t.foto_perfil : `http://${window.location.hostname}:8000/${t.foto_perfil}`} className="w-full h-full object-cover" />
                 </div>
               ))}
               {tejedoras.length > 5 && <div className="w-8 h-8 rounded-full border-2 border-indigo-600 bg-indigo-500 flex items-center justify-center text-[10px] font-bold">+{tejedoras.length - 5}</div>}
@@ -254,7 +253,6 @@ export default function Home() {
         </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Sección de Tejedoras */}
         <div className="bg-white p-6 rounded-2xl shadow-xl border border-indigo-100">
           <h2 className="text-xl font-semibold mb-4 text-indigo-700">1. Registrar Tejedora</h2>
           <div className="mb-6">
@@ -300,7 +298,7 @@ export default function Home() {
                   ✕
                 </button>
                 <div className="w-16 h-16 bg-indigo-200 rounded-full mb-2 overflow-hidden border-2 border-white shadow relative">
-                  {t.foto_perfil && <img src={`http://${window.location.hostname}:8000/${t.foto_perfil}`} alt={t.nombre} className="w-full h-full object-cover" />}
+                  {t.foto_perfil && <img src={t.foto_perfil?.startsWith('http') ? t.foto_perfil : `http://${window.location.hostname}:8000/${t.foto_perfil}`} alt={t.nombre} className="w-full h-full object-cover" />}
                   {t.biometria && (
                     <div className="absolute bottom-0 right-0 bg-green-500 w-4 h-4 rounded-full border-2 border-white flex items-center justify-center" title="Biometría guardada">
                       <span className="text-[8px] text-white">✓</span>
@@ -313,7 +311,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Sección de Productos */}
         <div className="bg-white p-6 rounded-2xl shadow-xl border border-green-100">
           <h2 className="text-xl font-semibold mb-4 text-green-700">2. Entrega de Producto</h2>
           <div className="mb-6">
