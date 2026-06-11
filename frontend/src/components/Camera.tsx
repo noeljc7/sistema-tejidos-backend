@@ -12,8 +12,21 @@ export default function Camera({ onCapture, label = "Capturar Foto" }: CameraPro
   const [stream, setStream] = useState<MediaStream | null>(null)
   const [isCameraOpen, setIsCameraOpen] = useState(false)
   
-  // Decidir qué cámara usar: 'user' para Perfil (selfie), 'environment' para Producto (trasera)
-  const facingMode = label.toLowerCase().includes('registro') ? 'user' : 'environment'
+  // Usar estado para permitir el cambio dinámico de cámara
+  const [facingMode, setFacingMode] = useState<'user' | 'environment'>(
+    label.toLowerCase().includes('registro') ? 'user' : 'environment'
+  )
+
+  const toggleCamera = () => {
+    setFacingMode(prev => prev === 'user' ? 'environment' : 'user')
+  }
+
+  // Reiniciar la cámara automáticamente si el usuario cambia el modo (frontal/trasera)
+  useEffect(() => {
+    if (isCameraOpen) {
+      startCamera()
+    }
+  }, [facingMode])
 
   const startCamera = async () => {
     try {
@@ -21,7 +34,6 @@ export default function Camera({ onCapture, label = "Capturar Foto" }: CameraPro
         stream.getTracks().forEach(track => track.stop())
       }
 
-      // Restricciones simplificadas para máxima compatibilidad móvil
       const constraints = { 
         video: { 
           facingMode: facingMode
@@ -33,7 +45,7 @@ export default function Camera({ onCapture, label = "Capturar Foto" }: CameraPro
       setStream(mediaStream)
       setIsCameraOpen(true)
 
-      // Usamos un pequeño delay y eventos explícitos para móviles
+      // Pequeño delay para asegurar que el elemento video existe en el DOM
       setTimeout(() => {
         if (videoRef.current) {
           videoRef.current.srcObject = mediaStream
