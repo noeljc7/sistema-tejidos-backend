@@ -23,10 +23,17 @@ export default function Home() {
   }, [])
 
   const checkServer = async () => {
-    const url = `http://${window.location.hostname}:8000`
+    // Usar la misma lógica que en lib/api.ts para obtener la URL correcta
+    let url = process.env.NEXT_PUBLIC_API_URL || `http://${window.location.hostname}:8000`
+    
+    // Si la URL es la de localhost pero estamos en la nube, corregir
+    if (typeof window !== "undefined" && !url.includes('onrender.com') && !window.location.hostname.includes('localhost')) {
+        url = `https://${window.location.hostname.replace('vercel.app', 'onrender.com')}` // Intento de fallback
+    }
+
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      const timeoutId = setTimeout(() => controller.abort(), 8000); // Más tiempo para el despertar de Render
 
       const res = await fetch(`${url}/`, {
         headers: { "Bypass-Tunnel-Reminder": "true" },
@@ -37,6 +44,7 @@ export default function Home() {
       if (res.ok) setServerStatus('online')
       else setServerStatus('offline')
     } catch (err) {
+      console.log("Error de conexión:", err)
       setServerStatus('offline')
     }
   }
