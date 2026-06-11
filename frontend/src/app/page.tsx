@@ -31,6 +31,8 @@ export default function Home() {
   const [cargando, setCargando] = useState(false)
   const [serverStatus, setServerStatus] = useState<'buscando' | 'online' | 'offline'>('buscando')
 
+  const [selectedTejedoraId, setSelectedTejedoraId] = useState<string | null>(null)
+
   useEffect(() => {
     refreshData()
     checkServer()
@@ -281,13 +283,27 @@ export default function Home() {
             </button>
           </form>
 
-          <h3 className="text-[10px] font-bold mt-14 mb-6 uppercase tracking-[0.3em] text-slate-400 border-b pb-4">Personal en Sistema</h3>
+          <h3 className="text-[10px] font-bold mt-14 mb-6 uppercase tracking-[0.3em] text-slate-400 border-b pb-4 flex justify-between items-center">
+            Personal en Sistema
+            {selectedTejedoraId && (
+              <button 
+                onClick={() => setSelectedTejedoraId(null)}
+                className="text-[9px] text-indigo-600 font-black hover:underline"
+              >
+                VER TODOS LOS REGISTROS
+              </button>
+            )}
+          </h3>
           <div className="grid grid-cols-3 sm:grid-cols-4 gap-4">
             {tejedoras.length === 0 && <p className="text-slate-400 text-xs italic py-4 text-center col-span-full uppercase tracking-tighter">Sin registros disponibles</p>}
             {tejedoras.map((t) => (
-              <div key={t.id} className="group relative flex flex-col items-center bg-white p-3 rounded-xl border border-slate-100 hover:border-indigo-200 transition-all shadow-sm hover:shadow-md">
+              <div 
+                key={t.id} 
+                onClick={() => setSelectedTejedoraId(t.id.toString())}
+                className={`group relative flex flex-col items-center p-3 rounded-xl border transition-all shadow-sm hover:shadow-md cursor-pointer ${selectedTejedoraId === t.id.toString() ? 'border-indigo-600 bg-indigo-50/50' : 'border-slate-100 bg-white hover:border-indigo-200'}`}
+              >
                 <button 
-                  onClick={() => handleDeleteTejedora(t.id)}
+                  onClick={(e) => { e.stopPropagation(); handleDeleteTejedora(t.id); }}
                   className="absolute -top-2 -right-2 bg-white text-slate-400 w-6 h-6 rounded-full border border-slate-200 opacity-0 group-hover:opacity-100 transition-opacity hover:text-rose-600 hover:border-rose-200 z-30 flex items-center justify-center text-[10px]"
                 >
                   ✕
@@ -451,6 +467,26 @@ export default function Home() {
                       <div className="flex flex-col">
                         <span className="text-[7px] text-slate-400 font-black uppercase tracking-widest leading-none">Artesana Responsable</span>
                         <span className="text-[9px] font-bold text-slate-600 leading-tight uppercase">{tejedora?.nombre || 'NO IDENTIFICADA'}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      </div>
+    </div>
+    <style jsx global>{`
+      @keyframes loading {
+        from { transform: translateX(-100%); }
+        to { transform: translateX(100%); }
+      }
+    `}</style>
+  </main>
+  )
+}
+="text-[9px] font-bold text-slate-600 leading-tight uppercase">{tejedora?.nombre || 'NO IDENTIFICADA'}</span>
                       </div>
                     </div>
                   </div>
