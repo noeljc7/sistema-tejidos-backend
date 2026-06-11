@@ -51,7 +51,7 @@ export default function Home() {
         p.tipo.toUpperCase(),
         p.color.toUpperCase(),
         p.peso_gramos || 0,
-        p.precio_sugerido || 0,
+        `Q${p.precio_sugerido || 0}`,
         p.estado.toUpperCase()
       ]
     })
@@ -421,6 +421,39 @@ export default function Home() {
                     </div>
                     <div className="pt-4 border-t border-slate-50">
                       <span className="text-[9px] font-bold text-slate-600 uppercase">{tejedora?.nombre || 'ANÓNIMA'}</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+  )
+}
+-2 rounded flex flex-col border border-slate-100">
+                        <span className="text-[7px] text-slate-400 font-black uppercase">Valor</span>
+                        <span className="text-xs font-bold text-slate-700">${p.precio_sugerido}</span>
+                      </div>
+                    </div>
+                    <div className="pt-4 border-t border-slate-50">
+                      <span className="text-[9px] font-bold text-slate-600 uppercase">{tejedora?.nombre || 'ANÓNIMA'}</span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+  )
+}
+pan className="text-[9px] font-bold text-slate-700 leading-tight uppercase">{tejedora?.nombre || 'NO IDENTIFICADA'}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
