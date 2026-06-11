@@ -93,34 +93,62 @@ def compare_faces(unknown_encoding, known_encodings_dict):
 
 def detect_product_color(image_path):
     """
-    Analiza la imagen del producto para detectar el color predominante.
+    Analiza la imagen del producto con K-Means para detectar colores primarios y secundarios,
+    y analiza la textura para determinar si es liso, rayado o jaspeado.
     """
     try:
         img = cv2.imread(image_path)
-        if img is None: return "Desconocido"
+        if img is None: return "Sin datos"
         
-        # Redimensionar para velocidad
-        img = cv2.resize(img, (100, 100))
-        # Convertir a LAB para mejor percepción de color
-        lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
+        # 1. Preprocesamiento: Recorte central para evitar fondos
+        h, w, _ = img.shape
+        roi = img[int(h*0.2):int(h*0.8), int(w*0.2):int(w*0.8)]
         
-        # Calcular el color promedio (ignorando los bordes para evitar fondos)
-        center_roi = lab[25:75, 25:75]
-        avg_color = np.mean(center_roi, axis=(0, 1))
+        # 2. Análisis de Colores con K-Means (Detectar 2 colores principales)
+        pixels = roi.reshape(-1, 3).astype(np.float32)
+        criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
+        flags = cv2.KMEANS_RANDOM_CENTERS
+        compactness, labels, centers = cv2.kmeans(pixels, 2, None, criteria, 10, flags)
         
-        # Convertir de vuelta a BGR para nombrar el color
-        avg_bgr = cv2.cvtColor(np.uint8([[avg_color]]), cv2.COLOR_LAB2BGR)[0][0]
+        # Contar píxeles por color
+        counts = np.bincount(labels.flatten())
+        sorted_indices = np.argsort(counts)[::-1]
         
-        # Lógica simple de nombres de colores
-        b, g, r = avg_bgr
-        if r > 180 and g < 100 and b < 100: return "Rojo"
-        if g > 180 and r < 100 and b < 100: return "Verde"
-        if b > 180 and r < 100 and g < 100: return "Azul"
-        if r > 200 and g > 200 and b < 100: return "Amarillo"
-        if r > 200 and g > 150 and b > 150: return "Rosa / Pastel"
-        if r < 50 and g < 50 and b < 50: return "Negro / Oscuro"
-        if r > 200 and g > 200 and b > 200: return "Blanco / Claro"
+        def get_color_name(bgr):
+            b, g, r = bgr
+            if r > 220 and g > 220 and b > 220: return "Blanco"
+            if r < 45 and g < 45 and b < 45: return "Negro"
+            if abs(r-g) < 15 and abs(g-b) < 15: return "Gris"
+            if r > 150 and g < 100 and b < 100: return "Rojo"
+            if r > 150 and g > 150 and b < 100: return "Amarillo"
+            if r < 100 and g > 120 and b < 100: return "Verde"
+            if r < 100 and g < 120 and b > 150: return "Azul"
+            if r > 150 and g < 100 and b > 150: return "Púrpura"
+            if r > 160 and g > 100 and b < 80: return "Marrón/Café"
+            if r > 200 and g > 130 and b > 130: return "Rosa/Pastel"
+            return "Multicolor"
+
+        primary_color = get_color_name(centers[sorted_indices[0]])
+        secondary_color = get_color_name(centers[sorted_indices[1]]) if len(centers) > 1 else None
         
-        return "Multicolor / Mezcla"
-    except:
+        # 3. Análisis de Patrón/Textura usando varianza de bordes
+        gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+        laplacian = cv2.Laplacian(gray, cv2.CV_64F).var()
+        
+        # Determinar estilo
+        estilo = "Liso / Sólido"
+        if primary_color != secondary_color and counts[sorted_indices[1]] > (len(pixels) * 0.25):
+            estilo = "Bicolor / Combinado"
+        if laplacian > 500:
+            estilo = "Texturizado / Punto grueso"
+        if laplacian > 1500:
+            estilo = "Jaspeado / Patrón complejo"
+
+        descripcion = primary_color
+        if secondary_color and secondary_color != primary_color and estilo != "Liso / Sólido":
+            descripcion += f" con {secondary_color}"
+        
+        return f"{descripcion} ({estilo})"
+    except Exception as e:
+        print(f"Error en IA de tela: {e}")
         return "No detectado"
