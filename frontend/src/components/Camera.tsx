@@ -132,6 +132,7 @@ export default function Camera({ onCapture, label = "Capturar Foto" }: CameraPro
             ref={videoRef} 
             autoPlay 
             playsInline 
+            muted
             className={`w-full h-auto ${facingMode === 'user' ? 'scale-x-[-1]' : ''}`}
           />
           <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/70 to-transparent flex justify-between items-center">
