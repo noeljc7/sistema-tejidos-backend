@@ -472,6 +472,29 @@ export default function Home() {
         </section>
       </div>
     </div>
+
+    {/* MODAL DE ZOOM PROFESIONAL */}
+    {selectedProductImage && (
+      <div 
+        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 md:p-10 animate-in fade-in duration-300"
+        onClick={() => setSelectedProductImage(null)}
+      >
+        <div className="relative max-w-5xl w-full max-h-full flex items-center justify-center">
+          <button 
+            className="absolute -top-12 right-0 text-white text-xs font-black uppercase tracking-widest hover:text-indigo-400 transition-colors"
+            onClick={() => setSelectedProductImage(null)}
+          >
+            Cerrar Detalle [X]
+          </button>
+          <img 
+            src={selectedProductImage} 
+            alt="Detalle de tejido" 
+            className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl border border-white/10"
+          />
+        </div>
+      </div>
+    )}
+
     <style jsx global>{`
       @keyframes loading {
         from { transform: translateX(-100%); }

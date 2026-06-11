@@ -17,6 +17,9 @@ class Producto(ProductoBase):
     foto_producto: str
     fecha_registro: datetime
     tejedora_id: int
+    peso_gramos: Optional[int] = None
+    precio_sugerido: Optional[int] = None
+    estado: Optional[str] = "terminado"
 
     model_config = {"from_attributes": True}
 
