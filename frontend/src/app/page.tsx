@@ -122,8 +122,22 @@ export default function Home() {
     }
     setCargando(true)
     try {
-      const file = new File([fotoTejedora], "tejedora.jpg", { type: "image/jpeg" })
-      await createTejedora(nombre, file)
+      let fileToUpload = new File([fotoTejedora], "tejedora.jpg", { type: "image/jpeg" })
+      
+      // Compresión IA
+      const options = {
+        maxSizeMB: 0.2, // Máximo 200KB
+        maxWidthOrHeight: 800,
+        useWebWorker: true
+      }
+      try {
+        const compressedFile = await imageCompression(fileToUpload, options)
+        fileToUpload = new File([compressedFile], "tejedora_comp.jpg", { type: "image/jpeg" })
+      } catch (e) {
+        console.error("Error comprimiendo:", e)
+      }
+
+      await createTejedora(nombre, fileToUpload)
       alert("✅ ¡PERFIL GUARDADO CON ÉXITO!")
       setNombre('')
       setFotoTejedora(null)
