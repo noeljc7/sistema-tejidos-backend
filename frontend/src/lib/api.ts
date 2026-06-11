@@ -68,8 +68,8 @@ export async function analizarProducto(foto: File) {
 }
 
 export async function createProducto(
-  tipo: str, 
-  color: str, 
+  tipo: string, 
+  color: string, 
   tejedoraId: number, 
   foto: File,
   pesoGramos?: number,
