@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plantilla Inteligente - Escritura y Fotos</title>
+    <style>
+        :root {
+            --line-color: #a0c4ff;
+            --margin-color: #ffadad;
+            --text-color: #2b2d42;
+            --border-decoration: #8d99ae;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /* CONFIGURACIÓN DE PÁGINA (CARTA + APA) */
+        .page {
+            width: 215.9mm;
+            height: 279.4mm;
+            padding: 25.4mm;
+            margin: 10mm auto;
+            background: white;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            position: relative;
+            box-sizing: border-box;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* CONTROLES (NO SE IMPRIMEN) */
+        .no-print {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            z-index: 1000;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .controls-group {
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 8px 15px;
+            margin: 0 5px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .btn-print { background: #27ae60; color: white; }
+        .btn-mode { background: #34495e; color: white; border: 1px solid #7f8c8d; }
+        .btn-mode.active { background: #3498db; border-color: #2980b9; }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .label-upload {
+            padding: 8px 15px;
+            background: #e67e22;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        /* ELEMENTOS DE LA HOJA */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10mm;
+            border-bottom: 1px solid var(--border-decoration);
+            padding-bottom: 5px;
+        }
+
+        .header-item { font-size: 11pt; font-style: italic; color: var(--text-color); }
+
+        .lines-container {
+            flex-grow: 1;
+            background-image: linear-gradient(var(--line-color) 1px, transparent 1px);
+            background-size: 100% 8.5mm;
+            position: relative;
+            padding-left: 10mm;
+        }
+
+        .lines-container::before {
+            content: '';
+            position: absolute;
+            left: 10mm;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background-color: var(--margin-color);
+        }
+
+        #photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(50mm, 1fr));
+            gap: 5mm;
+            margin-top: 5mm;
+            padding: 2mm;
+            background: transparent; /* Por defecto transparente */
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Cuando hay fotos, el fondo se vuelve blanco para tapar las líneas */
+        body.has-photos #photo-grid {
+            background: white;
+        }
+
+        .photo-item {
+            width: 100%;
+            height: 45mm;
+            border: none; /* ELIMINADO TOTALMENTE EL BORDE */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            background: transparent;
+        }
+
+        .photo-item img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            /* Eliminar cualquier sombra o borde que el navegador pueda añadir */
+            border: none;
+            outline: none;
+        }
+
+        .remove-photo {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: rgba(231, 76, 60, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            z-index: 20;
+            display: none;
+        }
+
+        .photo-item:hover .remove-photo { display: block; }
+
+        /* LÓGICA DE IMPRESIÓN SELECTIVA */
+        body.mode-template-only .photo-item { display: none; }
+        body.mode-template-only #photo-grid { background: transparent; }
+
+        body.mode-photos-only .lines-container { background-image: none; }
+        body.mode-photos-only .lines-container::before { display: none; }
+        body.mode-photos-only .header { visibility: hidden; }
+        body.mode-photos-only .photo-item { border: none; }
+
+        /* Toggles de visibilidad */
+        body.hide-date .header-date { display: none; }
+        body.hide-theme .header-theme { display: none; }
+
+        @media print {
+            body { background: none; margin: 0; padding: 0; }
+            .page { margin: 0; box-shadow: none; border: none; }
+            .no-print { display: none; }
+            .remove-photo { display: none !important; }
+        }
+    </style>
+</head>
+<body class="mode-all">
+
+    <div class="no-print">
+        <div class="controls-group">
+            <strong>1. Opciones de Encabezado:</strong>
+            <label><input type="checkbox" id="chk-date" checked onchange="toggleHeader('date')"> Mostrar Fecha</label>
+            <label><input type="checkbox" id="chk-theme" checked onchange="toggleHeader('theme')"> Mostrar Tema</label>
+        </div>
+
+        <div class="controls-group">
+            <strong>2. Cargar Fotos:</strong>
+            <label class="label-upload" for="file-input">Seleccionar Imágenes</label>
+            <input type="file" id="file-input" accept="image/*" multiple>
+        </div>
+        
+        <div class="controls-group">
+            <strong>3. Modo de Impresión:</strong>
+            <button id="btn-all" class="btn-mode active" onclick="setMode('all')">Todo</button>
+            <button id="btn-template" class="btn-mode" onclick="setMode('template-only')">Solo Plantilla</button>
+            <button id="btn-photos" class="btn-mode" onclick="setMode('photos-only')">Solo Fotos</button>
+        </div>
+
+        <div class="controls-group">
+            <button class="btn-print" onclick="window.print()">🖨️ IMPRIMIR</button>
+        </div>
+    </div>
+
+    <div class="page" id="main-page">
+        <div class="header">
+            <div class="header-item header-date">Fecha: ____ / ____ / ________</div>
+            <div class="header-item header-theme">Tema: _____________________________</div>
+        </div>
+        
+        <div class="lines-container">
+            <!-- Espacio para escribir a mano -->
+        </div>
+
+        <div id="photo-grid">
+            <!-- Las fotos se cargarán aquí -->
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('file-input');
+        const photoGrid = document.getElementById('photo-grid');
+
+        function toggleHeader(element) {
+            if (element === 'date') {
+                document.body.classList.toggle('hide-date', !document.getElementById('chk-date').checked);
+            } else {
+                document.body.classList.toggle('hide-theme', !document.getElementById('chk-theme').checked);
+            }
+        }
+
+        function updateHasPhotosClass() {
+            const hasPhotos = photoGrid.children.length > 0;
+            document.body.classList.toggle('has-photos', hasPhotos);
+        }
+
+        fileInput.addEventListener('change', function(e) {
+            const files = e.target.files;
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (!file.type.startsWith('image/')) continue;
+
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const div = document.createElement('div');
+                    div.className = 'photo-item';
+                    
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'remove-photo';
+                    removeBtn.innerHTML = '×';
+                    removeBtn.onclick = () => {
+                        div.remove();
+                        updateHasPhotosClass();
+                    };
+
+                    div.appendChild(img);
+                    div.appendChild(removeBtn);
+                    photoGrid.appendChild(div);
+                    updateHasPhotosClass();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function setMode(mode) {
+            document.body.className = 'mode-' + mode;
+            
+            // Actualizar botones
+            document.querySelectorAll('.btn-mode').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('btn-' + mode.replace('-only', '')).classList.add('active');
+        }
+    </script>
+</body>
+</html>

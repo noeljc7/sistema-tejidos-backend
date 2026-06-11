@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador Contable Cooperativa - Aprendizaje Interactivo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .step-card { transition: all 0.3s ease; }
+        .step-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .modal { display: none; position: fixed; z-index: 50; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <!-- Header -->
+    <header class="bg-blue-800 text-white p-6 shadow-lg">
+        <div class="container mx-auto">
+            <h1 class="text-3xl font-bold">Simulador Contable: Ciclo de Cooperativa</h1>
+            <p class="text-blue-100 mt-2">Guía paso a paso basada en el proceso administrativo real</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto py-8 px-4">
+        
+        <!-- Navigation Tabs -->
+        <div class="flex overflow-x-auto bg-white rounded-lg shadow mb-8 p-2 space-x-2">
+            <button onclick="showTab('inicio')" class="tab-btn px-4 py-2 rounded bg-blue-100 text-blue-800 font-semibold">Resumen del Proceso</button>
+            <button onclick="showTab('verificacion')" class="tab-btn px-4 py-2 rounded hover:bg-gray-100">1-2. Verificación</button>
+            <button onclick="showTab('compras')" class="tab-btn px-4 py-2 rounded hover:bg-gray-100">3-4. Compras y Cuentas</button>
+            <button onclick="showTab('sat-diario')" class="tab-btn px-4 py-2 rounded hover:bg-gray-100">5. SAT y Diario</button>
+            <button onclick="showTab('bancos')" class="tab-btn px-4 py-2 rounded hover:bg-gray-100">6-8. Bancos y Préstamos</button>
+            <button onclick="showTab('mayor-estados')" class="tab-btn px-4 py-2 rounded hover:bg-gray-100">9-10. Mayor y Estados</button>
+            <button onclick="showTab('inventario')" class="tab-btn px-4 py-2 rounded hover:bg-gray-100">11. Inventario</button>
+        </div>
+
+        <!-- TAB: INICIO -->
+        <div id="inicio" class="tab-content active">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Los 11 pasos resumidos como tarjetas -->
+                <div class="step-card bg-white p-6 rounded-xl border-l-4 border-blue-500">
+                    <span class="text-blue-500 font-bold text-xl">01-02</span>
+                    <h3 class="font-bold text-lg mt-2">Control Documental</h3>
+                    <p class="text-gray-600 text-sm mt-1">Descarga de agencia virtual y cruce con Excel administrativo (Serie y Número).</p>
+                </div>
+                <div class="step-card bg-white p-6 rounded-xl border-l-4 border-green-500">
+                    <span class="text-green-500 font-bold text-xl">03-04</span>
+                    <h3 class="font-bold text-lg mt-2">Libro de Compras</h3>
+                    <p class="text-gray-600 text-sm mt-1">Clasificación por régimen (Pequeño vs General) y asignación de nomenclatura.</p>
+                </div>
+                <div class="step-card bg-white p-6 rounded-xl border-l-4 border-orange-500">
+                    <span class="text-orange-500 font-bold text-xl">05</span>
+                    <h3 class="font-bold text-lg mt-2">IVA y Libro Diario</h3>
+                    <p class="text-gray-600 text-sm mt-1">Llenado de Formulario SAT 2000 y registro de gastos/costos en diario.</p>
+                </div>
+                <div class="step-card bg-white p-6 rounded-xl border-l-4 border-red-500">
+                    <span class="text-red-500 font-bold text-xl">06-08</span>
+                    <h3 class="font-bold text-lg mt-2">Conciliación Bancaria</h3>
+                    <p class="text-gray-600 text-sm mt-1">Verificación de cheques, transferencias, depósitos e intereses de deudores.</p>
+                </div>
+                <div class="step-card bg-white p-6 rounded-xl border-l-4 border-purple-500">
+                    <span class="text-purple-500 font-bold text-xl">09-10</span>
+                    <h3 class="font-bold text-lg mt-2">Centralización y Cierre</h3>
+                    <p class="text-gray-600 text-sm mt-1">Traslado al Libro Mayor y generación de los 5 estados financieros básicos.</p>
+                </div>
+                <div class="step-card bg-white p-6 rounded-xl border-l-4 border-yellow-500">
+                    <span class="text-yellow-500 font-bold text-xl">11</span>
+                    <h3 class="font-bold text-lg mt-2">Libro de Inventarios</h3>
+                    <p class="text-gray-600 text-sm mt-1">Detalle pormenorizado de activos y pasivos al cierre del periodo.</p>
+                </div>
+            </div>
+            
+            <div class="mt-12 bg-blue-50 p-8 rounded-2xl border border-blue-200">
+                <h2 class="text-2xl font-bold text-blue-900 mb-4">¿Cómo usar este simulador?</h2>
+                <p class="text-blue-800">
+                    Haz clic en las pestañas superiores para navegar por cada fase del proceso contable de la cooperativa. 
+                    Cada sección incluye una <strong>herramienta interactiva</strong> para que practiques lo que describe tu lista de 11 pasos.
+                </p>
+            </div>
+        </div>
+
+        <!-- TAB: VERIFICACION -->
+        <div id="verificacion" class="tab-content">
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-bold mb-4 border-b pb-2 text-blue-700">Paso 1 y 2: Descarga y Cotejo</h2>
+                <p class="mb-6 text-gray-700 italic">"Verificar documentos descargados con el Excel administrativo recibido..."</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="font-semibold text-blue-600 mb-2">Simulación de Facturas (Agencia Virtual)</h4>
+                        <table class="w-full text-sm border">
+                            <thead class="bg-gray-100">
+                                <tr><th class="p-2 border">Serie</th><th class="p-2 border">Número</th><th class="p-2 border">Monto</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="p-2 border text-center">A</td><td class="p-2 border text-center">101</td><td class="p-2 border text-right">Q 500.00</td></tr>
+                                <tr class="bg-red-50"><td class="p-2 border text-center font-bold">B</td><td class="p-2 border text-center font-bold">205</td><td class="p-2 border text-right">Q 1,200.00</td></tr>
+                                <tr><td class="p-2 border text-center">A</td><td class="p-2 border text-center">103</td><td class="p-2 border text-right">Q 350.00</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-green-600 mb-2">Excel Administrativo</h4>
+                        <table class="w-full text-sm border">
+                            <thead class="bg-gray-100">
+                                <tr><th class="p-2 border">Serie</th><th class="p-2 border">Número</th><th class="p-2 border">Estado</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="p-2 border text-center">A</td><td class="p-2 border text-center">101</td><td class="p-2 border text-center text-green-600">✓ Correcto</td></tr>
+                                <tr class="bg-red-50"><td class="p-2 border text-center">B</td><td class="p-2 border text-center">208</td><td class="p-2 border text-center text-red-600 font-bold">⚠ ERROR DE SERIE/NUM</td></tr>
+                                <tr><td class="p-2 border text-center">A</td><td class="p-2 border text-center">103</td><td class="p-2 border text-center text-green-600">✓ Correcto</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="mt-6 bg-yellow-50 p-4 border border-yellow-200 rounded">
+                    <strong>Lección Aprendida:</strong> En una cooperativa, la integridad de los datos es vital. Si la factura descargada (B-205) no coincide con el Excel (B-208), no puedes procesar el gasto hasta aclarar la discrepancia.
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: COMPRAS -->
+        <div id="compras" class="tab-content">
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-bold mb-4 border-b pb-2 text-blue-700">Paso 3 y 4: Clasificación en Libro de Compras</h2>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Simular Registro de Gasto:</label>
+                    <div class="flex gap-4 items-end bg-gray-50 p-4 rounded border">
+                        <div>
+                            <span class="text-xs text-gray-500">Proveedor</span>
+                            <input type="text" placeholder="Librería X" class="w-full p-2 border rounded">
+                        </div>
+                        <div>
+                            <span class="text-xs text-gray-500">Tipo de Régimen</span>
+                            <select id="regimenSelect" class="w-full p-2 border rounded">
+                                <option value="general">Régimen General (Genera IVA)</option>
+                                <option value="pequeno">Pequeño Contribuyente (No genera IVA crédito)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <span class="text-xs text-gray-500">Monto Total</span>
+                            <input type="number" id="montoInput" placeholder="100.00" class="w-full p-2 border rounded">
+                        </div>
+                        <button onclick="simularClasificacion()" class="bg-blue-600 text-white px-6 py-2 rounded font-bold hover:bg-blue-700">Clasificar</button>
+                    </div>
+                </div>
+
+                <div id="resultadoClasificacion" class="mt-6 hidden">
+                    <h4 class="font-bold mb-2">Resultado en el Libro de Compras:</h4>
+                    <div class="grid grid-cols-4 gap-4 bg-blue-50 p-4 rounded text-sm">
+                        <div class="text-center font-bold border-b border-blue-200">Base Imponible</div>
+                        <div class="text-center font-bold border-b border-blue-200">IVA (12%)</div>
+                        <div class="text-center font-bold border-b border-blue-200">Total</div>
+                        <div class="text-center font-bold border-b border-blue-200">Cuenta Contable (Paso 4)</div>
+                        
+                        <div id="resBase" class="text-center">Q 0.00</div>
+                        <div id="resIva" class="text-center">Q 0.00</div>
+                        <div id="resTotal" class="text-center">Q 0.00</div>
+                        <div class="text-center text-blue-600 font-semibold">"Papelería y Útiles"</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: SAT Y DIARIO -->
+        <div id="sat-diario" class="tab-content">
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-bold mb-4 border-b pb-2 text-blue-700">Paso 5: IVA SAT 2000 y Libro Diario</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Simulador de formulario -->
+                    <div class="border p-4 rounded bg-gray-50">
+                        <div class="bg-blue-900 text-white p-2 mb-4 text-center rounded">DECLARAGUATE - SAT 2000 (SIM)</div>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs uppercase font-bold text-gray-600">Compras Gravadas (Régimen General)</label>
+                                <input type="text" readonly value="Q 25,000.00" class="w-full p-2 bg-white border border-blue-300 rounded">
+                            </div>
+                            <div>
+                                <label class="block text-xs uppercase font-bold text-gray-600">Crédito Fiscal del Mes (12%)</label>
+                                <input type="text" readonly value="Q 3,000.00" class="w-full p-2 bg-yellow-50 border border-yellow-400 rounded text-blue-800 font-bold">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Libro Diario -->
+                    <div class="border p-4 rounded">
+                        <h4 class="font-bold text-center mb-4 italic">Libro Diario (Paso 5)</h4>
+                        <table class="w-full text-xs">
+                            <thead class="bg-gray-200">
+                                <tr><th class="p-1 border text-left">Cuenta</th><th class="p-1 border text-right">Debe</th><th class="p-1 border text-right">Haber</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td class="p-1 border">Gastos Administrativos (Varios)</td><td class="p-1 border text-right">22,321.43</td><td class="p-1 border"></td></tr>
+                                <tr><td class="p-1 border">IVA por Cobrar</td><td class="p-1 border text-right">2,678.57</td><td class="p-1 border"></td></tr>
+                                <tr><td class="p-1 border pl-4">A: Bancos</td><td class="p-1 border"></td><td class="p-1 border text-right">25,000.00</td></tr>
+                                <tr class="font-bold bg-gray-50"><td class="p-1 border">Totales</td><td class="p-1 border text-right">25,000.00</td><td class="p-1 border text-right">25,000.00</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: BANCOS -->
+        <div id="bancos" class="tab-content">
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-bold mb-4 border-b pb-2 text-blue-700">Paso 6, 7 y 8: Conciliación y Préstamos</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Ingresos por deudores -->
+                    <div class="p-4 bg-green-50 border border-green-200 rounded">
+                        <h4 class="font-bold text-green-800 mb-2">Ingresos (Paso 7)</h4>
+                        <ul class="text-sm space-y-2">
+                            <li class="flex justify-between"><span>Intereses Percibidos:</span> <span class="font-mono">Q 1,200.00</span></li>
+                            <li class="flex justify-between"><span>Moras Cobradas:</span> <span class="font-mono">Q 150.00</span></li>
+                            <li class="flex justify-between border-t border-green-300 pt-2 font-bold"><span>Total Depósito:</span> <span class="font-mono">Q 1,350.00</span></li>
+                        </ul>
+                    </div>
+
+                    <!-- Préstamos otorgados -->
+                    <div class="p-4 bg-red-50 border border-red-200 rounded">
+                        <h4 class="font-bold text-red-800 mb-2">Salidas por Préstamos (Paso 8)</h4>
+                        <div class="text-sm">
+                            <p><strong>Deudor:</strong> Juan Pérez</p>
+                            <p><strong>Monto:</strong> Q 15,000.00</p>
+                            <p><strong>Asiento:</strong> Préstamos Concedidos (Aumento Activo) a Bancos (Disminuye Activo).</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8">
+                    <h4 class="font-bold mb-4 text-center">Proceso de Conciliación Bancaria (Paso 6)</h4>
+                    <div class="flex items-center justify-center space-x-4">
+                        <div class="bg-white border-2 border-dashed p-4 text-center rounded">Estado de Cuenta Banco</div>
+                        <div class="text-2xl">⚡ vs ⚡</div>
+                        <div class="bg-white border-2 border-dashed p-4 text-center rounded">Excel Administrativo</div>
+                    </div>
+                    <p class="text-center text-sm text-gray-500 mt-4 italic">"El número de cheque o transferencia y documentos de gasto deben coincidir..."</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: MAYOR Y ESTADOS -->
+        <div id="mayor-estados" class="tab-content">
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-bold mb-4 border-b pb-2 text-blue-700">Paso 9 y 10: Libro Mayor y Estados Financieros</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Cuenta T Interactiva -->
+                    <div>
+                        <h4 class="font-bold text-center mb-4">Ejemplo Libro Mayor (Cuenta T)</h4>
+                        <div class="w-48 mx-auto border-t-2 border-black">
+                            <div class="text-center font-bold p-1">BANCOS</div>
+                            <div class="flex">
+                                <div class="w-1/2 border-r border-black p-2 min-h-[100px] text-right">
+                                    <span class="block text-green-600">50,000.00</span>
+                                    <span class="block text-green-600">1,350.00</span>
+                                </div>
+                                <div class="w-1/2 p-2 min-h-[100px] text-right">
+                                    <span class="block text-red-600">25,000.00</span>
+                                    <span class="block text-red-600">15,000.00</span>
+                                </div>
+                            </div>
+                            <div class="flex border-t border-black">
+                                <div class="w-1/2 text-right p-1 font-bold">51,350.00</div>
+                                <div class="w-1/2 text-right p-1 font-bold">40,000.00</div>
+                            </div>
+                            <div class="text-center font-black p-2 bg-gray-100 mt-2">Saldo: Q 11,350.00</div>
+                        </div>
+                    </div>
+
+                    <!-- Lista de Estados Financieros -->
+                    <div class="space-y-2">
+                        <h4 class="font-bold">Estructura Final (Paso 10):</h4>
+                        <div class="p-3 bg-blue-800 text-white rounded cursor-pointer hover:bg-blue-700">1. Estado de Resultados</div>
+                        <div class="p-3 bg-blue-800 text-white rounded cursor-pointer hover:bg-blue-700">2. Balance General</div>
+                        <div class="p-3 bg-blue-800 text-white rounded cursor-pointer hover:bg-blue-700">3. Estado de Flujo de Efectivo</div>
+                        <div class="p-3 bg-blue-800 text-white rounded cursor-pointer hover:bg-blue-700">4. Estado de Cambios en Patrimonio</div>
+                        <div class="p-3 bg-blue-800 text-white rounded cursor-pointer hover:bg-blue-700">5. Notas Aclaratorias</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB: INVENTARIO -->
+        <div id="inventario" class="tab-content">
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-bold mb-4 border-b pb-2 text-blue-700">Paso 11: Libro de Inventarios</h2>
+                <p class="mb-4 text-gray-700">Se elabora el libro de inventarios con el detalle final de activos, pasivos y capital de la cooperativa.</p>
+                
+                <div class="border rounded overflow-hidden">
+                    <div class="bg-gray-100 p-2 font-bold flex justify-between">
+                        <span>ACTIVO</span>
+                        <span>Monto Parcial</span>
+                        <span>Monto Total</span>
+                    </div>
+                    <div class="p-2 space-y-1 text-sm">
+                        <div class="flex justify-between pl-4"><span>Caja y Bancos</span><span></span><span>Q 150,000.00</span></div>
+                        <div class="flex justify-between pl-8 text-gray-500"><span>- Caja General</span><span>Q 10,000.00</span><span></span></div>
+                        <div class="flex justify-between pl-8 text-gray-500"><span>- Banco Industrial</span><span>Q 140,000.00</span><span></span></div>
+                        <div class="flex justify-between pl-4 border-t mt-2 font-bold bg-gray-50"><span>Suma del Activo</span><span></span><span>Q 150,000.00</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-gray-800 text-gray-400 p-8 mt-12 text-center">
+        <p>Simulador Educativo - Basado en Procedimientos de Cooperativas</p>
+        <p class="text-xs mt-2">Este HTML simula los 11 puntos solicitados para fines de aprendizaje.</p>
+    </footer>
+
+    <script>
+        function showTab(tabId) {
+            // Ocultar todos
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            // Desactivar todos los botones
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-100', 'text-blue-800', 'font-semibold');
+                btn.classList.add('hover:bg-gray-100');
+            });
+
+            // Mostrar el seleccionado
+            document.getElementById(tabId).classList.add('active');
+            
+            // Activar el botón correspondiente
+            event.currentTarget.classList.add('bg-blue-100', 'text-blue-800', 'font-semibold');
+            event.currentTarget.classList.remove('hover:bg-gray-100');
+        }
+
+        function simularClasificacion() {
+            const regimen = document.getElementById('regimenSelect').value;
+            const monto = parseFloat(document.getElementById('montoInput').value) || 0;
+            const resArea = document.getElementById('resultadoClasificacion');
+            
+            let base, iva;
+            
+            if (regimen === 'general') {
+                base = monto / 1.12;
+                iva = monto - base;
+            } else {
+                base = monto;
+                iva = 0; // Pequeño contribuyente no genera crédito fiscal para quien compra
+            }
+
+            document.getElementById('resBase').innerText = 'Q ' + base.toFixed(2);
+            document.getElementById('resIva').innerText = 'Q ' + iva.toFixed(2);
+            document.getElementById('resTotal').innerText = 'Q ' + monto.toFixed(2);
+            
+            resArea.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

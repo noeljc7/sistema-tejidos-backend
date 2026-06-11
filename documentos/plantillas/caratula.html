@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carátula - Diseño Profesional</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #34495e;
+            --bg-accent: #f4f7f6;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #e0e0e0;
+            font-family: 'Garamond', serif;
+            color: var(--primary-color);
+        }
+
+        .page {
+            width: 215.9mm;
+            height: 279.4mm;
+            padding: 25.4mm; /* Margen APA: 1 pulgada (2.54cm) */
+            margin: 10mm auto;
+            background: white;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            position: relative;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            text-align: center;
+            border: 8px double var(--primary-color);
+        }
+
+        .institution {
+            text-transform: uppercase;
+            font-size: 18pt;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-top: 20mm;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+
+        .faculty {
+            font-size: 14pt;
+            margin-top: 5mm;
+            font-style: italic;
+        }
+
+        .title-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .work-title {
+            font-size: 32pt;
+            font-weight: bold;
+            margin: 10px 0;
+            color: black;
+        }
+
+        .work-subtitle {
+            font-size: 16pt;
+            margin-top: 10px;
+            color: var(--accent-color);
+        }
+
+        .info-section {
+            width: 100%;
+            text-align: left;
+            margin-bottom: 20mm;
+            padding-left: 20mm;
+            font-size: 13pt;
+            line-height: 1.8;
+        }
+
+        .info-label {
+            font-weight: bold;
+            display: inline-block;
+            width: 40mm;
+        }
+
+        .location-date {
+            margin-bottom: 10mm;
+            font-size: 12pt;
+            font-weight: bold;
+        }
+
+        @media print {
+            body {
+                background: none;
+            }
+            .page {
+                margin: 0;
+                box-shadow: none;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+
+        .no-print {
+            text-align: center;
+            padding: 20px;
+            background: #2c3e50;
+            color: white;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="no-print">
+        <p>Previsualización de Carátula. Edita los campos en el HTML o imprime directamente.</p>
+        <button onclick="window.print()">Imprimir Carátula</button>
+    </div>
+
+    <div class="page">
+        <div class="header-section">
+            <div class="institution">INSTITUCIÓN: _____________________________________</div>
+            <div class="faculty">DEPARTAMENTO: ___________________________________</div>
+        </div>
+
+        <div class="title-container">
+            <div class="work-title">TÍTULO: ________________________________</div>
+            <div class="work-subtitle">SUBTÍTULO: ________________________________</div>
+        </div>
+
+        <div class="info-section">
+            <div><span class="info-label">ESTUDIANTE:</span> ________________________________</div>
+            <div><span class="info-label">CURSO:</span> ________________________________</div>
+            <div><span class="info-label">DOCENTE:</span> ________________________________</div>
+            <div><span class="info-label">MATERIA:</span> ________________________________</div>
+        </div>
+
+        <div class="location-date">
+            CIUDAD: _________________  FECHA: ____/____/2026
+        </div>
+    </div>
+</body>
+</html>

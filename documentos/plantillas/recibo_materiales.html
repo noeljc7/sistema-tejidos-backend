@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recibo de Materiales - Diseño Cuadriculado</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --grid-color: #e0e6ed;
+            --border-color: #bdc3c7;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* CONFIGURACIÓN CARTA + MÁRGENES APA (2.54cm) */
+        .page {
+            width: 215.9mm;
+            height: 279.4mm;
+            padding: 25.4mm;
+            margin: 10mm auto;
+            background: white;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            position: relative;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* PATRÓN CUADRICULADO (5mm x 5mm) */
+        .grid-pattern {
+            background-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 5mm 5mm;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .company-info h1 {
+            margin: 0;
+            font-size: 20pt;
+            color: var(--primary-color);
+            text-transform: uppercase;
+        }
+
+        .date-box {
+            font-size: 11pt;
+            font-weight: bold;
+        }
+
+        .field-group {
+            margin-bottom: 15px;
+        }
+
+        .field {
+            border: 1px solid var(--border-color);
+            height: 10mm;
+            display: flex;
+            align-items: center;
+            padding: 0 5px;
+            margin-bottom: 5px;
+            position: relative;
+        }
+
+        .field label {
+            background: white;
+            position: absolute;
+            top: -8px;
+            left: 10px;
+            padding: 0 5px;
+            font-size: 8pt;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-transform: uppercase;
+        }
+
+        /* TABLA CUADRICULADA */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            flex-grow: 1;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px;
+            text-align: left;
+            font-size: 10pt;
+            border: 1px solid var(--primary-color);
+        }
+
+        td {
+            border: 1px solid var(--border-color);
+            height: 10mm; /* Forzar altura para que coincida con la cuadrícula si es posible */
+            padding: 0;
+        }
+
+        .col-qty { width: 15%; }
+        .col-desc { width: 45%; }
+        .col-unit { width: 20%; }
+        .col-total { width: 20%; }
+
+        /* TOTALES */
+        .totals-container {
+            margin-top: 10px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .totals-table {
+            width: 50%;
+            border: 1px solid var(--primary-color);
+        }
+
+        .totals-table td {
+            height: 8mm;
+            padding: 0 10px;
+            font-weight: bold;
+        }
+
+        .total-label { background: #f8f9fa; width: 40%; }
+
+        /* FIRMA ÚNICA */
+        .signature-section {
+            margin-top: 25mm;
+            display: flex;
+            justify-content: center;
+        }
+
+        .signature-container {
+            width: 80mm;
+            text-align: center;
+        }
+
+        .signature-line {
+            border-top: 1px solid black;
+            margin-bottom: 5px;
+        }
+
+        .name-field {
+            font-size: 10pt;
+            margin-top: 5px;
+            border-bottom: 1px dotted #ccc;
+            height: 6mm;
+        }
+
+        .signature-label {
+            font-size: 9pt;
+            font-weight: bold;
+            color: #7f8c8d;
+            text-transform: uppercase;
+        }
+
+        .no-print {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        @media print {
+            body { background: white; }
+            .page { margin: 0; box-shadow: none; }
+            .no-print { display: none; }
+            /* Asegurar que la cuadrícula se imprima */
+            .grid-pattern { -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="no-print">
+        <button onclick="window.print()">🖨️ IMPRIMIR RECIBO CUADRICULADO</button>
+    </div>
+
+    <div class="page">
+        <div class="header">
+            <div class="company-info">
+                <h1>Recibo de Materiales</h1>
+            </div>
+            <div class="date-box">
+                FECHA: ____ / ____ / 2026
+            </div>
+        </div>
+
+        <div class="field-group">
+            <div class="field grid-pattern">
+                <label>Proyecto / Obra</label>
+            </div>
+            <div class="field grid-pattern">
+                <label>Proveedor / Establecimiento</label>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-qty">Cant.</th>
+                    <th class="col-desc">Descripción</th>
+                    <th class="col-unit">P. Unitario</th>
+                    <th class="col-total">Total</th>
+                </tr>
+            </thead>
+            <tbody class="grid-pattern">
+                <!-- Filas con fondo cuadriculado -->
+                <tr><td></td><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td><td></td></tr>
+            </tbody>
+        </table>
+
+        <div class="totals-container">
+            <table class="totals-table">
+                <tr>
+                    <td class="total-label">SUBTOTAL</td>
+                    <td class="grid-pattern"></td>
+                </tr>
+                <tr>
+                    <td class="total-label">IMPUESTOS</td>
+                    <td class="grid-pattern"></td>
+                </tr>
+                <tr>
+                    <td class="total-label">TOTAL</td>
+                    <td class="grid-pattern"></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="signature-section">
+            <div class="signature-container">
+                <div style="height: 15mm;"></div> <!-- Espacio para la firma -->
+                <div class="signature-line"></div>
+                <div class="name-field"></div>
+                <div class="signature-label">Nombre y Firma del Responsable</div>
+            </div>
+        </div>
+
+        <div style="position: absolute; bottom: 8mm; left: 25.4mm; font-size: 8pt; color: #bdc3c7;">
+            Documento cuadriculado para control de materiales - 2026
+        </div>
+    </div>
+
+</body>
+</html>
